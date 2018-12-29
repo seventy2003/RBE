@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 """
-FILE : trace 
+FILE : strace 
 
 DESCRIPTION:   
                                                                                        
 FUNCTION LIST:  
-  1. class definition of Trace
+  1. class definition of STrace
 
 REVISION:  
   
