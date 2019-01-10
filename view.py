@@ -21,8 +21,10 @@ import sys
 import os
 import configparser
 from docx import Document
+import csv
 
 from strace import *
+from req import *
 from parse import Parse
 
 
@@ -35,7 +37,7 @@ cmdUI = [
         '  \'1\': start parse;'             ,
         '  \'2\': display list;'            ,
         '  \'3\': trace USER ID'            ,
-        '  \'4\': generate database file;'  ,        
+        '  \'4\': generate csv file;'       ,        
         '  \'0\': exit.'
 ]
 
@@ -117,7 +119,16 @@ class CmdView(View):
             else:
                 print('Parse first please.')
         elif cmd == '4':
-            print('Generate database file...')
+            print('Generate csv file...')
+
+            f = open('../output/dict.csv','w')
+
+            csvWriter = csv.writer(f)
+            for k in srsDict:
+                if srsDict[k]:
+                    csvWriter.writerow([k, srsDict[k].type])
+            f.close()
+
         elif cmd == '0':
             os._exit(0)
         else:

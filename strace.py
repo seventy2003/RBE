@@ -18,6 +18,9 @@ Ver  | yyyymmdd | Who    | Description of changes
 import re
 from req import srsDict
 
+# for debug
+import csv 
+
 class STrace:
 
     # User ID diretory
@@ -103,7 +106,26 @@ class STrace:
 
         print("Coverage is: %.2f%%"  % (covCnt / len(self.usrDict) * 100))
 
-        print("\n***********************************************************\n")                
+        print("\n***********************************************************\n")    
+
+        # must add newline, or there will be many null line in csv
+        f = open('../output/strace.csv','w', newline="")
+
+
+        # todo for: a bytes-like object is required, not 'str'
+        '''
+        csvWriter = csv.writer(f)
+        for k,v in self.usrTrSrs.items():
+            csvWriter.writerow([k,v])
+        f.close()
+        '''   
+        csvWriter = csv.writer(f)
+        for k in self.usrTrSrs:
+            if self.usrTrSrs[k]:
+                for ele in self.usrTrSrs[k]:
+                    csvWriter.writerow([k,ele])
+        f.close()
+
 
 
 
