@@ -110,10 +110,9 @@ class IntfReqFactory(ReqFactory):
         self.req.intfId = reqP.intfId
         self.req.type = 'INTF'
         self.req.trace = reqP.trace
-        self.req.verify = reqP.verify        
+        self.req.verify = reqP.verify
 
         srsDict[self.req.id] = self.req
-
 
 
 

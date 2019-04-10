@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
+1
+
 FILE : main 
 
 DESCRIPTION:   
@@ -24,4 +26,3 @@ if __name__ == "__main__":
     # command line view
     v = CmdView()
     v.run()
-

@@ -88,7 +88,8 @@ class CmdView(View):
         cmd = input()
         if cmd == '1':
             print("Start parse...")
-            self.parse.run(self.f)
+            self.parse.doParse(self.f)
+            #self.parse.run(self.f)
             print('Done.')
         elif cmd == '2':
             self.display()
@@ -155,5 +156,6 @@ class CmdView(View):
                       srsDict[key].verify)
 
         print("Debug.")
+
 
 
