@@ -97,6 +97,11 @@ class FuncReqFactory(ReqFactory):
         self.req.trace = reqP.trace
         self.req.verify = reqP.verify
 
+        if self.req.id in srsDict:
+            print("Same ID found.")
+            print(self.req.id)
+            assert self.req.id not in srsDict
+        
         srsDict[self.req.id] = self.req
     
 class IntfReqFactory(ReqFactory):
@@ -111,6 +116,11 @@ class IntfReqFactory(ReqFactory):
         self.req.type = 'INTF'
         self.req.trace = reqP.trace
         self.req.verify = reqP.verify
+
+        if self.req.id in srsDict:
+            print("Same ID found.")
+            print(self.req.id)
+            assert self.req.id not in srsDict        
 
         srsDict[self.req.id] = self.req
 
