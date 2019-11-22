@@ -16,6 +16,7 @@ Ver  | yyyymmdd | Who    | Description of changes
 """
 
 import re
+import configparser
 
 from req import Req, TotalReq, ValidFuncReq, IntfReq
 from req import FuncReqFactory, IntfReqFactory
@@ -150,6 +151,7 @@ class Parse:
     """
     state = 0
     pState = StateInit()
+    cf = None
 
     #funcFact = FuncReqFactory()
     #intfFact = IntfReqFactory()
@@ -158,55 +160,65 @@ class Parse:
     
     def __init__(self):
         self.storeReq = TotalReq()
+        # read config file
+        self.cf = configparser.ConfigParser()
+        self.cf.read("smg.conf",encoding="utf-8-sig")
     
     def matchId(self):
 
-        if re.match(r'SRS_', self.line):
+        #if re.match(r'SRS_', self.line):
+        if re.match(self.cf.get("regular", "srsIdRgl"), self.line):
             return True
         else:
             return False
 
     def matchInput(self):
 
-        if re.match(r'输入[：:]', self.line):
+        #if re.match(r'输入[：:]', self.line):
+        if re.match(self.cf.get("regular", "inDataRgl"), self.line):
             return True
         else:
             return False
 
     def matchOutput(self):
 
-        if re.match(r'输出[：:]', self.line):
+        #if re.match(r'输出[：:]', self.line):
+        if re.match(self.cf.get("regular", "outDataRgl"), self.line):
             return True
         else:
             return False
 
     def matchVerify(self):
 
-        if re.match(r'验证方法[：:]', self.line):
+        #if re.match(r'验证方法[：:]', self.line):
+        if re.match(self.cf.get("regular", "vefyMtdRgl"), self.line):
             return True
         else:
             return False
 
     def matchTrace(self):
 
-        if re.match(r'Traceability[：:]', self.line):
+        #if re.match(r'Traceability[：:]', self.line):
+        if re.match(self.cf.get("regular", "tracRgl"), self.line):
             return True
         else:
             return False
 
     def matchInterface(self):
 
-        if re.match(r'接口标识[：:]', self.line):
+        #if re.match(r'接口标识[：:]', self.line):
+        if re.match(self.cf.get("regular", "infRgl"), self.line):
             return True
         else:
             return False
 
     def matchAbnm(self):
 
-        if re.match(r'异常处理[：:]', self.line):
+        #if re.match(r'异常处理[：:]', self.line):
+        if re.match(self.cf.get("regular", "excpRgl"), self.line):
             return True
         else:
-            return False            
+            return False
     
     def procId(self):
 
@@ -302,6 +314,9 @@ class Parse:
     
     def doParse(self, f):
 
+        #to avoid trace before multiple parse
+        #self.state = 0
+
         self.storeReq = TotalReq()
 
         #for line in f:
@@ -349,6 +364,10 @@ class Parse:
         self.state = 0
         self.storeReq = TotalReq()
 
+        # get pattern from conf file
+        cf = configparser.ConfigParser()
+        cf.read("smg.conf",encoding="utf-8-sig")
+
         #for line in f:
         for para in f.paragraphs:
             line = para.text
@@ -356,8 +375,12 @@ class Parse:
             # delete last char \n
             line = line.strip()
 
+            # get pattern from conf file
+            #inPatn = cf.get("regular", "srsIdRgl")
+
             # ID
-            if re.match(r'SRS_', line):
+            #if re.match(r'SRS_', line):
+            if re.match(cf.get("regular", "srsIdRgl"), line):
 
                 # create concrete requirement
                 if self.storeReq.type == 'FUNC':
@@ -378,7 +401,8 @@ class Parse:
                 self.storeReq.resetReq(line)
 
             # input data    
-            elif re.match(r'输入[：:]', line):
+            #elif re.match(r'输入[：:]', line):
+            elif re.match(cf.get("regular", "inDataRgl"), line):
                 self.state = 2
 
                 #pos = line.find('：')
@@ -393,7 +417,8 @@ class Parse:
                 self.storeReq.type = 'FUNC'
 
             # output data    
-            elif re.match(r'输出[：:]', line):
+            #elif re.match(r'输出[：:]', line):
+            elif re.match(cf.get("regular", "outDataRgl"), line):
                 self.state = 3
 
                 pos = re.search('[：:]', line).start()
@@ -405,7 +430,8 @@ class Parse:
                 self.storeReq.dataOut.append(line)
 
             # verify method   
-            elif re.match(r'验证方法[：:]', line):
+            #elif re.match(r'验证方法[：:]', line):
+            elif re.match(cf.get("regular", "vefyMtdRgl"), line):
                 self.state = 4
 
                 pos = re.search('[：:]', line).start()
@@ -415,7 +441,8 @@ class Parse:
                 self.storeReq.verify = line
 
             # trace  
-            elif re.match(r'Traceability[：:]', line):
+            #elif re.match(r'Traceability[：:]', line):
+            elif re.match(cf.get("regular", "tracRgl"), line):
                 self.state = 5
 
                 pos = re.search('[：:]', line).start()
@@ -428,7 +455,8 @@ class Parse:
                 
                 self.storeReq.trace = strip_line
 
-            elif re.match(r'接口标识[：:]', line):
+            #elif re.match(r'接口标识[：:]', line):
+            elif re.match(cf.get("regular", "infRgl"), line):
                 self.state = 6
 
                 pos = re.search('[：:]', line).start()
@@ -437,10 +465,12 @@ class Parse:
                 self.storeReq.verify = line
                 self.storeReq.type = 'INTF'
 
-            elif re.match(r'异常处理[：:]', line):
+            #elif re.match(r'异常处理[：:]', line):
+            elif re.match(cf.get("regular", "excpRgl"), line):
                 self.state = 7
                 
-            elif re.match(r'相关性能需求[：:]', line):
+            #elif re.match(r'相关性能需求[：:]', line):
+            elif re.match(cf.get("regular", "perfmRgl"), line):
                 self.state = 8
 
             else:

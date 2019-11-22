@@ -14,6 +14,8 @@ REVISION:
   
 Ver  | yyyymmdd | Who    | Description of changes
 1.00 | 20181105 | wxhao  | Create.
+1.00 | 20191121 | wxhao  | Add ' encoding="utf-8-sig" ' to support chinese character 
+     in configure file
 
 """
 
@@ -69,7 +71,7 @@ class CmdView(View):
         # get srs file
         try:
             cf = configparser.ConfigParser()
-            cf.read("smg.conf")
+            cf.read("smg.conf",encoding="utf-8-sig")
             infile = cf.get("input", "inSrsFile")
             #self.f = open(infile, 'r', encoding = 'gb18030', errors = 'ignore')
             self.f = Document(infile)
@@ -87,6 +89,11 @@ class CmdView(View):
 
         cmd = input()
         if cmd == '1':
+            #clear for next trace
+            self.parse.state = 0
+            if self.trace:
+                self.trace.tClear()
+            
             print("Start parse...")
             self.parse.doParse(self.f)
             #self.parse.run(self.f)
@@ -101,7 +108,7 @@ class CmdView(View):
                 # get rw file
                 try:
                     cf = configparser.ConfigParser()
-                    cf.read("smg.conf")
+                    cf.read("smg.conf",encoding="utf-8-sig")
                     infile = cf.get("input", "inUsrFile")
                     #self.f = open(infile, 'r', encoding = 'gb18030', errors = 'ignore')
                     self.fileRw = Document(infile)
@@ -114,6 +121,9 @@ class CmdView(View):
                 self.trace.doTrace()
                 self.trace.debug()
                 self.trace.hasThisFun()
+
+
+
                 #self.fc = fuck()
                 #self.fc.funp()
 
@@ -155,7 +165,7 @@ class CmdView(View):
                 print(srsDict[key].id, "    ", srsDict[key].trace, "    ",
                       srsDict[key].verify)
 
-        print("Debug.")
+        print("Dsplay for debug Done.")
 
 
 

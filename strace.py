@@ -108,8 +108,9 @@ class STrace:
 
         print("\n***********************************************************\n")    
 
+        # generate output file of U2R
         # must add newline, or there will be many null line in csv
-        f = open('../output/strace.csv','w', newline="")
+        f = open('../output/straceU2R.csv','w', newline="")
 
 
         # todo for: a bytes-like object is required, not 'str'
@@ -125,6 +126,25 @@ class STrace:
                 for ele in self.usrTrSrs[k]:
                     csvWriter.writerow([k,ele])
         f.close()
+
+        # generate output file of R2U
+        f = open('../output/straceR2U.csv','w', newline="")
+
+        csvWriter = csv.writer(f)
+        for k in self.srsTrUsr:
+            if self.srsTrUsr[k]:
+                for ele in self.srsTrUsr[k]:
+                    csvWriter.writerow([k,ele])
+
+        f.close()
+
+    def tClear(self):
+
+        srsDict.clear()
+
+        self.usrDict.clear()
+        self.srsTrUsr.clear()
+        self.usrTrSrs.clear()
 
 
 
