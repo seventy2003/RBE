@@ -28,6 +28,7 @@ import csv
 from strace import *
 from req import *
 from parse import Parse
+from output import OutputRBE
 
 
 # for debug display
@@ -36,10 +37,11 @@ from req import srsDict
 cmdUI = [
         '--------------------------------'  ,
         'Input command:'                    ,
-        '  \'1\': start parse;'             ,
-        '  \'2\': display list;'            ,
-        '  \'3\': trace USER ID'            ,
-        '  \'4\': generate csv file;'       ,        
+        '  \'1\': start parse'              ,
+        '  \'2\': display list'             ,
+        '  \'3\': output SRS'               ,
+        '  \'4\': trace USER ID'            ,
+        '  \'9\': generate csv file;'       ,        
         '  \'0\': exit.'
 ]
 
@@ -60,9 +62,11 @@ class CmdView(View):
 
     parse = None
     trace = None
+    outPutSrs = None
     
     def init(self):
         self.parse = Parse()
+        self.outPutSrs = OutputRBE()
 
     def getInput(self):
 
@@ -101,6 +105,13 @@ class CmdView(View):
         elif cmd == '2':
             self.display()
         elif cmd == '3':
+            print('Output SRS...')
+            if self.parse.state == 100:
+                self.outPutSrs.srsOutput()
+            else:
+                print('Parse first please.')
+
+        elif cmd == '4':
             print('Trace User ID...')
             if self.parse.state == 100:
                 print('Start trace')
@@ -129,7 +140,7 @@ class CmdView(View):
 
             else:
                 print('Parse first please.')
-        elif cmd == '4':
+        elif cmd == '9':
             print('Generate csv file...')
 
             f = open('../output/dict.csv','w')
