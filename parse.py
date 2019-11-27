@@ -38,7 +38,7 @@ class StateInit(PState):
 
         if (pars.matchId()):
             pars.setState(StateId())
-            pars.parseLine()            
+            pars.parseLine()
 
 class StateId(PState):
 
@@ -46,23 +46,50 @@ class StateId(PState):
 
         if (pars.matchId()):
             pars.procId()
+        elif (pars.matchDisc()):
+            pars.setState(StateDisc())
+            pars.parseLine()
+        else:
+            pars.setState(StateExcp())
+            pars.parseLine()
+
+class StateDisc(PState):
+
+    def lineParse(self, pars):
+        
+        if (pars.matchDisc()):
+            pars.procDisc()
         elif (pars.matchInput()):
             pars.setState(StateInput())
             pars.parseLine()
-        elif (pars.matchInterface()):
-            pars.setState(StateInterface())
+        elif (pars.matchVerify()):
+            pars.setState(StateVerify())
             pars.parseLine()
+        elif (pars.matchId()):
+            pars.setState(StateExcp())
+            pars.parseLine()
+        elif (pars.matchOutput()):
+            pars.setState(StateExcp())
+            pars.parseLine()
+        # more state to add, todo
         else:
-            pars.setState(StateNone())
-            pars.parseLine()
+            pars.procDisc()            
+
+
 
 class StateInput(PState):
 
     def lineParse(self, pars):
 
-        if (pars.matchOutput()):
+        if (pars.matchInput()):
+            pars.procInput()
+        elif (pars.matchOutput()):
             pars.setState(StateOutput())
             pars.parseLine()
+        elif (pars.matchId()):
+            pars.setState(StateExcp())
+            pars.parseLine()
+        # more state to add, todo
         else:
             pars.procInput()
 
@@ -70,14 +97,48 @@ class StateOutput(PState):
 
     def lineParse(self, pars):
 
-        if (pars.matchTrace()):
-            pars.setState(StateTrace())
+        if (pars.matchOutput()):
+            pars.procOutput()
+        elif (pars.matchHandle()):
+            pars.setState(StateHandle())
             pars.parseLine()
-        elif (pars.matchAbnm()):
-            pars.setState(StateNone())
+        elif (pars.matchId()):
+            pars.setState(StateExcp())
             pars.parseLine()
+        # more state to add, todo
         else:
             pars.procOutput()
+
+class StateHandle(PState):
+
+    def lineParse(self, pars):
+
+        if (pars.matchPerfm()):
+            pars.setState(StatePerfm())
+            pars.procPerfm()
+        elif (pars.matchId()):
+            pars.setState(StateExcp())
+            pars.parseLine()
+        elif (pars.matchOutput()):
+            pars.setState(StateExcp())
+            pars.parseLine()
+        # more state to add, todo
+        else:
+            pars.procHandle()
+
+class StatePerfm(PState):
+
+    def lineParse(self, pars):
+
+        if (pars.matchVerify()):
+            pars.setState(StateVerify())
+            pars.parseLine()
+        elif (pars.matchId()):
+            pars.setState(StateExcp())
+            pars.parseLine()
+        # more state to add, todo
+        else:
+            pars.procPerfm()
 
 class StateVerify(PState):
 
@@ -85,9 +146,45 @@ class StateVerify(PState):
 
         if (pars.matchVerify()):
             pars.procVerify()
+        elif (pars.matchTrace()):
+            pars.setState(StateTrace())
+            pars.parseLine()
+        else:
+            pars.setState(StateExcp())
+            pars.parseLine()
 
-        pars.setState(StateNone())
-        pars.parseLine()
+
+class StateTrace(PState):
+
+    def lineParse(self, pars):
+
+        if (pars.matchTrace()):
+            pars.procTrace()
+        elif (pars.matchId()):
+            pars.setState(StateId())
+            pars.parseLine()
+        elif (pars.matchInput()):
+            pars.setState(StateExcp())
+            pars.parseLine()            
+        # more state to add, todo
+        else:
+            pars.setState(StateNone())
+            pars.parseLine()
+
+class StateNone(PState):
+
+    def lineParse(self, pars):
+
+        if (pars.matchId()):
+            pars.setState(StateId())
+            pars.parseLine()
+        elif (pars.matchInput()):
+            pars.setState(StateExcp())
+            pars.parseLine()            
+        # more state to add, todo
+        #else:
+            #pars.setState(StateNone())
+            #pars.parseLine()
 
 class StateInterface(PState):
     
@@ -99,33 +196,12 @@ class StateInterface(PState):
             pars.setState(StateTrace())
             pars.parseLine()
 
-class StateTrace(PState):
+class StateExcp(PState):
 
     def lineParse(self, pars):
+        pars.procExcp()
 
-        if (pars.matchTrace()):
-            pars.procTrace()
-        elif (pars.matchVerify()):
-            pars.setState(StateVerify())
-            pars.parseLine()
-        else:
-            pars.setState(StateNone())
-            pars.parseLine()
-
-class StateNone(PState):
-
-    def lineParse(self, pars):
-
-        if (pars.matchInput()):
-            pars.setState(StateInput())
-            pars.parseLine()
-        elif (pars.matchId()):
-            pars.setState(StateId())
-            pars.parseLine()
-        elif (pars.matchTrace()):
-            pars.setState(StateTrace())
-            pars.parseLine()
-
+# no use? to delete, todo
 class StateDone(PState):
 
     def lineParse(self, pars):
@@ -133,7 +209,6 @@ class StateDone(PState):
         if (pars.matchId()):
             pars.setState(StateId())
             pars.parseLine()
-
 
 class Parse:
 
@@ -168,6 +243,12 @@ class Parse:
 
         #if re.match(r'SRS_', self.line):
         if re.match(self.cf.get("regular", "srsIdLineRgl"), self.line):
+            return True
+        else:
+            return False
+
+    def matchDisc(self):
+        if re.match(self.cf.get("regular", "DiscRgl"), self.line):
             return True
         else:
             return False
@@ -212,14 +293,22 @@ class Parse:
         else:
             return False
 
-    def matchAbnm(self):
+    def matchHandle(self):
 
         #if re.match(r'异常处理[：:]', self.line):
-        if re.match(self.cf.get("regular", "excpRgl"), self.line):
+        if re.match(self.cf.get("regular", "HandleRgl"), self.line):
             return True
         else:
             return False
     
+    def matchPerfm(self):
+
+        #if re.match(r'异常处理[：:]', self.line):
+        if re.match(self.cf.get("regular", "PerfmRgl"), self.line):
+            return True
+        else:
+            return False
+
     def procId(self):
 
         # create concrete requirement
@@ -239,6 +328,9 @@ class Parse:
         self.line = self.line[pos:].strip()
 
         self.storeReq.resetReq(self.line)
+
+    def procDisc(self):
+        pass
 
     def procInput(self):
 
@@ -276,6 +368,12 @@ class Parse:
         if line != '':        
             self.storeReq.dataOut.append(line)
 
+    def procHandle(self):
+        pass
+
+    def procPerfm(self):
+        pass
+
     def procVerify(self):
 
         pos = re.search('[：:]', self.line).start()
@@ -304,6 +402,10 @@ class Parse:
         
         self.storeReq.trace = strip_line
 
+    def procExcp(self):
+        print("Format error.\n")
+        raise UserWarning(self.line, )
+
     def setState(self, pst):
         self.pState = pst
     
@@ -330,6 +432,10 @@ class Parse:
 
             # delete last char \n
             line = line.strip()
+
+            # for debug
+            #print("****\n")
+            #print(type(self.pState))
 
             self.setLine(line)
             self.parseLine()
@@ -472,7 +578,7 @@ class Parse:
                 self.storeReq.type = 'INTF'
 
             #elif re.match(r'异常处理[：:]', line):
-            elif re.match(cf.get("regular", "excpRgl"), line):
+            elif re.match(cf.get("regular", "HandleRgl"), line):
                 self.state = 7
                 
             #elif re.match(r'相关性能需求[：:]', line):
