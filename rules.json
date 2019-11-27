@@ -1,12 +1,17 @@
 {
-    "allItems": ["Id", "Input", "Output", "Verify", "Interface", "Trace", "Excp"],
+    "allItems": ["Id", "Disp", "Input", "Output", "Handle", "Perfm", "Verify", "Interface", "Trace", "None", "Excp"],
     "fomat1": [
-        {"item": "Id", "post":["input", "inf", "disp"], "else": "Excp"},
-        {"item": "Input", "post":["input", "inf", "disp"], "else": "Excp"},
-        {"item": "Output", "post":["input", "inf", "disp"], "else": "Excp"},
-        {"item": "Verify", "post":["input", "inf", "disp"], "else": "Excp"},
+        {"item": "Id", "post":["Disp"], "else": "Excp"},
+        {"item": "Disp", "post":["Input", "Verify"], "else": "Disp"},
+        {"item": "Input", "post":["Output"], "else": "Input"},
+        {"item": "Output", "post":["Handle"], "else": "Output"},
+        {"item": "Handle", "post":["Perfm"], "else": "Handle"},
+        {"item": "Perfm", "post":["Verify"], "else": "Perfm"},
+        {"item": "Verify", "post":["Trace"], "else": "Excp"},
+        {"item": "Trace", "post":["Id"], "else": "None"},
+        {"item": "None", "post":["Id"]},
         {"item": "Interface", "post":["input", "inf", "disp"], "else": "Excp"},
-        {"item": "Trace", "post":["input", "inf", "disp"], "else": "Excp"}
+        
     ]
 }
 
