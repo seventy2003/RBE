@@ -27,7 +27,7 @@ class PState:
     
     def lineParse(self, Parse):
         pass
-    
+
 
 class StateInit(PState):
 
@@ -167,7 +167,7 @@ class Parse:
     def matchId(self):
 
         #if re.match(r'SRS_', self.line):
-        if re.match(self.cf.get("regular", "srsIdRgl"), self.line):
+        if re.match(self.cf.get("regular", "srsIdLineRgl"), self.line):
             return True
         else:
             return False
@@ -235,6 +235,9 @@ class Parse:
             self.reqFact.concreteStore(self.storeReq)
 
         # reset storeReq
+        pos = self.line.find(self.cf.get("regular", "srsIdRgl"))
+        self.line = self.line[pos:].strip()
+
         self.storeReq.resetReq(self.line)
 
     def procInput(self):
@@ -376,11 +379,11 @@ class Parse:
             line = line.strip()
 
             # get pattern from conf file
-            #inPatn = cf.get("regular", "srsIdRgl")
+            #inPatn = cf.get("regular", "srsIdLineRgl")
 
             # ID
             #if re.match(r'SRS_', line):
-            if re.match(cf.get("regular", "srsIdRgl"), line):
+            if re.match(cf.get("regular", "srsIdLineRgl"), line):
 
                 # create concrete requirement
                 if self.storeReq.type == 'FUNC':
@@ -398,6 +401,9 @@ class Parse:
                 self.state = 1
 
                 # reset storeReq
+                pos = line.find(self.cf.get("regular", "srsIdRgl"))
+                line = line[pos:].strip()
+
                 self.storeReq.resetReq(line)
 
             # input data    

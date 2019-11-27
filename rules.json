@@ -1,0 +1,14 @@
+{
+    "allItems": ["Id", "Input", "Output", "Verify", "Interface", "Trace"],
+    "fomat1": [
+        {"item": "Id", "pred":["input", "inf", "disp"], "else": "excp"},
+        {"item": "Input", "pred":["input", "inf", "disp"], "else": "excp"},
+        {"item": "Output", "pred":["input", "inf", "disp"], "else": "excp"},
+        {"item": "Verify", "pred":["input", "inf", "disp"], "else": "excp"},
+        {"item": "Interface", "pred":["input", "inf", "disp"], "else": "excp"},
+        {"item": "Trace", "pred":["input", "inf", "disp"], "else": "excp"}
+    ]
+}
+
+
+

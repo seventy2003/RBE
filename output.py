@@ -36,3 +36,13 @@ class OutputRBE:
 
         f.close()
 
+        # input and output list file of srs
+        f = open('../output/srsIO.csv','w', newline="")
+
+        csvWriter = csv.writer(f)
+        for k in sorted(srsDict.keys()):
+            if srsDict[k].type is 'FUNC':
+                csvWriter.writerow([srsDict[k].id, srsDict[k].dataIn, srsDict[k].dataOut])
+
+        f.close()
+
