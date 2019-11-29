@@ -311,18 +311,6 @@ class Parse:
 
     def procId(self):
 
-        # create concrete requirement
-        if self.storeReq.type == 'FUNC':
-            self.reqFact = FuncReqFactory()
-        elif self.storeReq.type == 'INTF':
-            self.reqFact = IntfReqFactory()
-
-        # store storeReq
-        #if self.storeReq.type == 'FUNC' or self.storeReq.type == 'INTF':
-        if self.storeReq.type != '':
-            self.reqFact.create()
-            self.reqFact.concreteStore(self.storeReq)
-
         # reset storeReq
         pos = self.line.find(self.cf.get("regular", "srsIdRgl"))
         self.line = self.line[pos:].strip()
@@ -392,6 +380,9 @@ class Parse:
 
     def procTrace(self):
 
+        """
+        proc trace
+        """
         pos = re.search('[：:]', self.line).start()
         line = self.line[pos + 1 :]
         line = line.strip()
@@ -401,6 +392,22 @@ class Parse:
         strip_line = [ele.strip() for ele in line]
         
         self.storeReq.trace = strip_line
+
+        """
+        requirement store
+        """
+        # todo, requirement classification
+        if self.storeReq.type == 'FUNC':
+            self.reqFact = FuncReqFactory()
+        elif self.storeReq.type == 'INTF':
+            self.reqFact = IntfReqFactory()
+
+        # store storeReq
+        #if self.storeReq.type == 'FUNC' or self.storeReq.type == 'INTF':
+        if self.storeReq.type != '':
+            self.reqFact.create()
+            self.reqFact.concreteStore(self.storeReq)
+
 
     def procExcp(self):
         print("Format error.\n")
@@ -436,6 +443,8 @@ class Parse:
             # for debug
             #print("****\n")
             #print(type(self.pState))
+            if line == "ID: SRS_IF_iFp_Ctl":
+                a = 100
 
             self.setLine(line)
             self.parseLine()
@@ -446,19 +455,19 @@ class Parse:
         """
 
         # create concrete requirement
-        if self.storeReq.type == 'FUNC':
-            self.reqFact = FuncReqFactory()
-        elif self.storeReq.type == 'INTF':
-            self.reqFact = IntfReqFactory()
+        # if self.storeReq.type == 'FUNC':
+        #     self.reqFact = FuncReqFactory()
+        # elif self.storeReq.type == 'INTF':
+        #     self.reqFact = IntfReqFactory()
 
-        # store storeReq
-        # if self.storeReq.type == 'FUNC' or self.storeReq.type == 'INTF':
-        if self.storeReq.type != '':
-            self.reqFact.create()
-            self.reqFact.concreteStore(self.storeReq)
+        # # store storeReq
+        # # if self.storeReq.type == 'FUNC' or self.storeReq.type == 'INTF':
+        # if self.storeReq.type != '':
+        #     self.reqFact.create()
+        #     self.reqFact.concreteStore(self.storeReq)
 
-        # reset storeReq
-        self.storeReq.resetReq(line)
+        # # reset storeReq
+        # self.storeReq.resetReq(line)
 
         self.state = 100
 

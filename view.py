@@ -108,6 +108,7 @@ class CmdView(View):
             print('Output SRS...')
             if self.parse.state == 100:
                 self.outPutSrs.srsOutput()
+                print("Done.")
             else:
                 print('Parse first please.')
 
