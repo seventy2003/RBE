@@ -34,6 +34,9 @@ from output import OutputRBE
 # for debug display
 from req import srsDict  
 
+# for debug
+import time
+
 cmdUI = [
         '--------------------------------'  ,
         'Input command:'                    ,
@@ -95,13 +98,26 @@ class CmdView(View):
         if cmd == '1':
             #clear for next trace
             self.parse.state = 0
+            srsDict.clear()
             if self.trace:
                 self.trace.tClear()
             
             print("Start parse...")
+
+            # for performance watch
+            startTime = time.time()
+
             self.parse.doParse(self.f)
             #self.parse.run(self.f)
-            print('Done.')
+
+            # for performance watch
+            endTime = time.time()
+
+            print('Done.\n')
+
+            # for performance watch
+            print("Time is %s Second\n" %(endTime - startTime))
+            
         elif cmd == '2':
             self.display()
         elif cmd == '3':

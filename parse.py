@@ -76,7 +76,6 @@ class StateDisc(PState):
             pars.procDisc()            
 
 
-
 class StateInput(PState):
 
     def lineParse(self, pars):
@@ -443,31 +442,11 @@ class Parse:
             # for debug
             #print("****\n")
             #print(type(self.pState))
-            if line == "ID: SRS_IF_iFp_Ctl":
-                a = 100
+            # if line == "ID: SRS_IF_iFp_Ctl":
+            #     a = 100
 
             self.setLine(line)
             self.parseLine()
-
-
-        """
-        store the last requirement
-        """
-
-        # create concrete requirement
-        # if self.storeReq.type == 'FUNC':
-        #     self.reqFact = FuncReqFactory()
-        # elif self.storeReq.type == 'INTF':
-        #     self.reqFact = IntfReqFactory()
-
-        # # store storeReq
-        # # if self.storeReq.type == 'FUNC' or self.storeReq.type == 'INTF':
-        # if self.storeReq.type != '':
-        #     self.reqFact.create()
-        #     self.reqFact.concreteStore(self.storeReq)
-
-        # # reset storeReq
-        # self.storeReq.resetReq(line)
 
         self.state = 100
 
@@ -577,7 +556,7 @@ class Parse:
                 self.storeReq.trace = strip_line
 
             #elif re.match(r'接口标识[：:]', line):
-            elif re.match(cf.get("regular", "infRgl"), line):
+            elif re.match(cf.get("regular", "InterfaceRgl"), line):
                 self.state = 6
 
                 pos = re.search('[：:]', line).start()

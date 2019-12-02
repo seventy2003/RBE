@@ -1,18 +1,19 @@
 {
-    "allItems": ["Id", "Disp", "Input", "Output", "Handle", "Perfm", "Verify", "Trace", "None", "Excp", "Interface"],
-    "fomat1": [
-        {"item": "Id", "post":["Disp"], "else": "Excp"},
-        {"item": "Disp", "post":["Input", "Verify"], "else": "Disp"},
-        {"item": "Input", "post":["Output"], "else": "Input"},
-        {"item": "Output", "post":["Handle"], "else": "Output"},
-        {"item": "Handle", "post":["Perfm"], "else": "Handle"},
-        {"item": "Perfm", "post":["Verify"], "else": "Perfm"},
-        {"item": "Verify", "post":["Trace"], "else": "Excp"},
-        {"item": "Trace", "post":["Id"], "else": "None"},
-        {"item": "None", "post":["Id"]},
-        {"item": "Interface", "post":["input", "inf", "disp"], "else": "Excp"}
+    "funReq": [
+        {"item": "Id", "num": 1},
+        {"item": "Disp", "num": 2},
+        {"item": "Input", "num": 3},
+        {"item": "Output", "num": 4},
+        {"item": "Handle", "num": 5},
+        {"item": "Perfm", "num": 6},
+        {"item": "Verify", "num": 7},
+        {"item": "Trace", "num": 8}
+    ],
+    "intfReq": [
+        {"item": "Id", "num": 1},
+        {"item": "Disp", "num": 2},
+        {"item": "Verify", "num": 3},
+        {"item": "Trace", "num": 4}
     ]
 }
-
-
 
