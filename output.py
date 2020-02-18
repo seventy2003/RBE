@@ -40,6 +40,7 @@ class OutputRBE:
         f = open('../output/srsIO.csv','w', newline="")
 
         csvWriter = csv.writer(f)
+        csvWriter.writerow(["Requirement ID", "Input", "Output"])
         for k in sorted(srsDict.keys()):
             if srsDict[k].type is 'FUNC':
                 csvWriter.writerow([srsDict[k].id, srsDict[k].dataIn, srsDict[k].dataOut])

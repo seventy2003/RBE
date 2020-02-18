@@ -1,6 +1,6 @@
 {
     "allItems": ["Id", "Disp", "Input", "Output", "Handle", "Perfm", "Verify", "Trace", "None", "Excp", "Interface"],
-    "fomat1": [
+    "funcReq": [
         {"item": "Id", "post":["Disp"], "else": "Excp"},
         {"item": "Disp", "post":["Input", "Verify"], "else": "Disp"},
         {"item": "Input", "post":["Output"], "else": "Input"},

@@ -44,7 +44,10 @@ cmdUI = [
         '  \'2\': display list'             ,
         '  \'3\': output SRS'               ,
         '  \'4\': trace USER ID'            ,
-        '  \'9\': generate csv file;'       ,        
+        '  \'5\': generate database file'   ,
+        '  \'6\': dependency analyze'       ,
+        '  \'7\': tradeoff analyze'         ,
+        '  \'8\': generate figures'         ,                    
         '  \'0\': exit.'
 ]
 
@@ -148,7 +151,7 @@ class CmdView(View):
                 self.trace.getUsrDict()
                 self.trace.doTrace()
                 self.trace.debug()
-                self.trace.hasThisFun()
+                #self.trace.hasThisFun()
 
 
 

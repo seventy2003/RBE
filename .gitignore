@@ -19,3 +19,11 @@ __pycache__/pState.cpython-37.pyc
 __pycache__/output.cpython-37.pyc
 __pycache__/pState.cpython-37.pyc
 *.pyc
+.VSCodeCounter/details.md
+.VSCodeCounter/results.csv
+.VSCodeCounter/results.md
+.VSCodeCounter/results.txt
+__pycache__/output.cpython-37.pyc
+__pycache__/pState.cpython-37.pyc
+out/linecount.json
+out/linecount.txt

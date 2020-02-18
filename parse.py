@@ -19,7 +19,7 @@ import re
 import configparser
 
 from req import Req, TotalReq, ValidFuncReq, IntfReq
-from req import FuncReqFactory, IntfReqFactory
+from req import *
 from pState import StateInit
 
 
@@ -131,6 +131,25 @@ class Parse:
 
         self.storeReq.resetReq(self.line)
 
+        searchRelt = re.search(self.cf.get("nonFuncId", "safReqIdRel"), self.line)
+        if searchRelt != None:
+            self.storeReq.type = 'SAFE'
+        else:
+            searchRelt = re.search(self.cf.get("nonFuncId", "prfReqIdRel"), self.line)
+            if searchRelt != None:
+                self.storeReq.type = 'PERF'
+            else:
+                self.storeReq.type = 'FUNC'
+        # pos = self.line.find('_SAF')
+        # if pos != -1:
+        #     self.storeReq.type = 'SAFE'
+        # else:
+        #     pos = self.line.find('_PRF')
+        #     if pos != -1:
+        #         self.storeReq.type = 'PERF'
+        #     else:
+        #         self.storeReq.type = 'FUNC'
+
     def procDisc(self):
         pass
 
@@ -151,7 +170,7 @@ class Parse:
 
         if line != '':
             self.storeReq.dataIn.append(line)
-        self.storeReq.type = 'FUNC'
+        #self.storeReq.type = 'FUNC'
 
     def procOutput(self):
 
@@ -215,13 +234,16 @@ class Parse:
             self.reqFact = FuncReqFactory()
         elif self.storeReq.type == 'INTF':
             self.reqFact = IntfReqFactory()
+        elif self.storeReq.type == 'SAFE':
+            self.reqFact = SafeReqFactory()
+        elif self.storeReq.type == 'PERF':
+            self.reqFact = PerfReqFactory()
 
         # store storeReq
         #if self.storeReq.type == 'FUNC' or self.storeReq.type == 'INTF':
         if self.storeReq.type != '':
             self.reqFact.create()
             self.reqFact.concreteStore(self.storeReq)
-
 
     def procExcp(self):
         print("Format error.\n")
