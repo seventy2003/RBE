@@ -1,19 +1,6 @@
 {
-    "funReq": [
-        {"item": "Id", "num": 1},
-        {"item": "Disp", "num": 2},
-        {"item": "Input", "num": 3},
-        {"item": "Output", "num": 4},
-        {"item": "Handle", "num": 5},
-        {"item": "Perfm", "num": 6},
-        {"item": "Verify", "num": 7},
-        {"item": "Trace", "num": 8}
-    ],
-    "intfReq": [
-        {"item": "Id", "num": 1},
-        {"item": "Disp", "num": 2},
-        {"item": "Verify", "num": 3},
-        {"item": "Trace", "num": 4}
-    ]
+    "allItems": ["Id", "Disc", "Input", "Output", "Handle", "Perfm", "Verify", "Trace", "None", "Excp", "Interface"],
+    "funReq": ["Id", "Disc", "Input", "Output", "Handle", "Perfm", "Verify", "Trace"],
+    "intfReq": ["Id", "Disc", "Verify", "Trace"]
 }
 

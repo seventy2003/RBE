@@ -15,9 +15,11 @@ class StateInit(PState):
         if (pars.matchId()):
             pars.setState(StateId())
             pars.parseLine()
+
 class StateId(PState):
 
     def lineParse(self, pars):
+
         if (pars.matchId()):
             pars.procId()
         elif (pars.matchDisc()):
@@ -46,11 +48,6 @@ class StateId(PState):
             pars.parseLine()
 
 """
-class StateId(PState):
-
-    def lineParse(self, pars):
-
-
         if (pars.matchId()):
             pars.procId()
         elif (pars.matchDisc()):
@@ -60,9 +57,11 @@ class StateId(PState):
             pars.setState(StateExcp())
             pars.parseLine()
 """            
+
 class StateDisc(PState):
 
     def lineParse(self, pars):
+        
         if (pars.matchDisc()):
             pars.procDisc()
         elif (pars.matchInput()):
@@ -89,12 +88,7 @@ class StateDisc(PState):
         else:
             pars.procDisc()
 
-"""
-class StateDisc(PState):
-
-    def lineParse(self, pars):
-        
-        
+"""        
         if (pars.matchDisc()):
             pars.procDisc()
         elif (pars.matchInput()):
@@ -114,9 +108,11 @@ class StateDisc(PState):
             pars.procDisc()        
 """                
 
+
 class StateInput(PState):
 
     def lineParse(self, pars):
+
         if (pars.matchInput()):
             pars.procInput()
         elif (pars.matchOutput()):
@@ -144,11 +140,6 @@ class StateInput(PState):
             pars.procInput()
 
 """
-class StateInput(PState):
-
-    def lineParse(self, pars):
-
-
         if (pars.matchInput()):
             pars.procInput()
         elif (pars.matchOutput()):
@@ -161,9 +152,11 @@ class StateInput(PState):
         else:
             pars.procInput()
 """
+
 class StateOutput(PState):
 
     def lineParse(self, pars):
+
         if (pars.matchOutput()):
             pars.procOutput()
         elif (pars.matchHandle()):
@@ -191,11 +184,6 @@ class StateOutput(PState):
             pars.procOutput()
 
 """
-class StateOutput(PState):
-
-    def lineParse(self, pars):
-
-
         if (pars.matchOutput()):
             pars.procOutput()
         elif (pars.matchHandle()):
@@ -212,6 +200,8 @@ class StateOutput(PState):
 class StateHandle(PState):
 
     def lineParse(self, pars):
+
+
         if (pars.matchHandle()):
             pars.procHandle()
         elif (pars.matchPerfm()):
@@ -239,12 +229,6 @@ class StateHandle(PState):
             pars.procHandle()
 
 """
-class StateHandle(PState):
-
-    def lineParse(self, pars):
-
-
-
         if (pars.matchPerfm()):
             pars.setState(StatePerfm())
             pars.procPerfm()
@@ -261,6 +245,7 @@ class StateHandle(PState):
 class StatePerfm(PState):
 
     def lineParse(self, pars):
+
         if (pars.matchPerfm()):
             pars.procPerfm()
         elif (pars.matchVerify()):
@@ -287,12 +272,7 @@ class StatePerfm(PState):
         else:
             pars.procPerfm()
    
-"""   
-class StatePerfm(PState):
-
-    def lineParse(self, pars):
-
-  
+"""     
         if (pars.matchVerify()):
             pars.setState(StateVerify())
             pars.parseLine()
@@ -306,6 +286,7 @@ class StatePerfm(PState):
 class StateVerify(PState):
 
     def lineParse(self, pars):
+
         if (pars.matchVerify()):
             pars.procVerify()
         elif (pars.matchTrace()):
@@ -334,11 +315,6 @@ class StateVerify(PState):
             pars.parseLine()
 
 """
-class StateVerify(PState):
-
-    def lineParse(self, pars):
-
-
         if (pars.matchVerify()):
             pars.procVerify()
         elif (pars.matchTrace()):
@@ -348,9 +324,11 @@ class StateVerify(PState):
             pars.setState(StateExcp())
             pars.parseLine()
 """
+
 class StateTrace(PState):
 
     def lineParse(self, pars):
+
         if (pars.matchTrace()):
             pars.procTrace()
         elif (pars.matchId()):
@@ -379,11 +357,6 @@ class StateTrace(PState):
             pars.parseLine()
 
 """
-class StateTrace(PState):
-
-    def lineParse(self, pars):
-
-
         if (pars.matchTrace()):
             pars.procTrace()
         elif (pars.matchId()):
@@ -397,15 +370,6 @@ class StateTrace(PState):
             pars.setState(StateNone())
             pars.parseLine()
 """
-
-class StateInterface(PState):
-
-    def lineParse(self, pars):
-        pass
-
-
-#Abcdefg#
-
 class StateNone(PState):
 
     def lineParse(self, pars):
