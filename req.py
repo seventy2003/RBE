@@ -57,8 +57,8 @@ class IntfReq(Req):
 
 class TotalReq(ValidFuncReq, IntfReq, PerfReq, SafeReq):
 
-    def resetReq(self, srsId):
-        self.id = srsId
+    def resetReq(self):
+        self.id = ''
         self.type = 'NONFUNC'
         self.valid = ''
         self.state = 0

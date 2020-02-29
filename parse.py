@@ -123,13 +123,39 @@ class Parse:
         else:
             return False
 
+    def resetState(self):
+        self.storeReq.resetReq()
+
+    def endState(self):
+        
+        """
+        requirement store
+        """
+        # todo, requirement classification
+        if self.storeReq.type == 'FUNC':
+            self.reqFact = FuncReqFactory()
+        elif self.storeReq.type == 'INTF':
+            self.reqFact = IntfReqFactory()
+        elif self.storeReq.type == 'SAFE':
+            self.reqFact = SafeReqFactory()
+        elif self.storeReq.type == 'PERF':
+            self.reqFact = PerfReqFactory()
+
+        # store storeReq
+        #if self.storeReq.type == 'FUNC' or self.storeReq.type == 'INTF':
+        if self.storeReq.type != '':
+            self.reqFact.create()
+            self.reqFact.concreteStore(self.storeReq)
+    
     def procId(self):
 
+        #self.storeReq.resetReq(self.line)
+        
         # reset storeReq
         pos = self.line.find(self.cf.get("regular", "srsIdRgl"))
         self.line = self.line[pos:].strip()
 
-        self.storeReq.resetReq(self.line)
+        self.storeReq.id = self.line
 
         searchRelt = re.search(self.cf.get("nonFuncId", "safReqIdRel"), self.line)
         if searchRelt != None:
@@ -226,28 +252,11 @@ class Parse:
         
         self.storeReq.trace = strip_line
 
-        """
-        requirement store
-        """
-        # todo, requirement classification
-        if self.storeReq.type == 'FUNC':
-            self.reqFact = FuncReqFactory()
-        elif self.storeReq.type == 'INTF':
-            self.reqFact = IntfReqFactory()
-        elif self.storeReq.type == 'SAFE':
-            self.reqFact = SafeReqFactory()
-        elif self.storeReq.type == 'PERF':
-            self.reqFact = PerfReqFactory()
 
-        # store storeReq
-        #if self.storeReq.type == 'FUNC' or self.storeReq.type == 'INTF':
-        if self.storeReq.type != '':
-            self.reqFact.create()
-            self.reqFact.concreteStore(self.storeReq)
 
     def procExcp(self):
         print("Format error.\n")
-        raise UserWarning(self.line, )
+        raise UserWarning(self.line, self.storeReq.id)
 
     def setState(self, pst):
         self.pState = pst
@@ -289,169 +298,6 @@ class Parse:
 
         #self.setState(StateDone())    
     
-
-
-
-
-    def run(self, f):
-
-        self.state = 0
-        self.storeReq = TotalReq()
-
-        # get pattern from conf file
-        cf = configparser.ConfigParser()
-        cf.read("smg.conf",encoding="utf-8-sig")
-
-        #for line in f:
-        for para in f.paragraphs:
-            line = para.text
-
-            # delete last char \n
-            line = line.strip()
-
-            # get pattern from conf file
-            #inPatn = cf.get("regular", "srsIdLineRgl")
-
-            # ID
-            #if re.match(r'SRS_', line):
-            if re.match(cf.get("regular", "srsIdLineRgl"), line):
-
-                # create concrete requirement
-                if self.storeReq.type == 'FUNC':
-                    self.reqFact = FuncReqFactory()
-                elif self.storeReq.type == 'INTF':
-                    self.reqFact = IntfReqFactory()
-
-                # store storeReq
-                #if self.storeReq.type == 'FUNC' or self.storeReq.type == 'INTF':
-                if self.storeReq.type != '':
-                    self.reqFact.create()
-                    self.reqFact.concreteStore(self.storeReq)
-                
-                # set parse state
-                self.state = 1
-
-                # reset storeReq
-                pos = line.find(self.cf.get("regular", "srsIdRgl"))
-                line = line[pos:].strip()
-
-                self.storeReq.resetReq(line)
-
-            # input data    
-            #elif re.match(r'输入[：:]', line):
-            elif re.match(cf.get("regular", "inDataRgl"), line):
-                self.state = 2
-
-                #pos = line.find('：')
-                pos = re.search('[：:]', line).start()
-                line = line[pos + 1 :]
-                line = line.strip()
-                pos = line.find(' ')
-                line = line[:pos]
-
-                if line != '':
-                    self.storeReq.dataIn.append(line)
-                self.storeReq.type = 'FUNC'
-
-            # output data    
-            #elif re.match(r'输出[：:]', line):
-            elif re.match(cf.get("regular", "outDataRgl"), line):
-                self.state = 3
-
-                pos = re.search('[：:]', line).start()
-                line = line[pos + 1 :]
-                line = line.strip()
-                pos = line.find(' ')
-                line = line[:pos]                
-                
-                self.storeReq.dataOut.append(line)
-
-            # verify method   
-            #elif re.match(r'验证方法[：:]', line):
-            elif re.match(cf.get("regular", "vefyMtdRgl"), line):
-                self.state = 4
-
-                pos = re.search('[：:]', line).start()
-                line = line[pos + 1 :]
-                line = line.strip()
-                
-                self.storeReq.verify = line
-
-            # trace  
-            #elif re.match(r'Traceability[：:]', line):
-            elif re.match(cf.get("regular", "tracRgl"), line):
-                self.state = 5
-
-                pos = re.search('[：:]', line).start()
-                line = line[pos + 1 :]
-                line = line.strip()
-                line = re.split('[,，]', line)
-
-                # delete front and end space of every element
-                strip_line = [ele.strip() for ele in line]
-                
-                self.storeReq.trace = strip_line
-
-            #elif re.match(r'接口标识[：:]', line):
-            elif re.match(cf.get("regular", "InterfaceRgl"), line):
-                self.state = 6
-
-                pos = re.search('[：:]', line).start()
-                line = line[pos + 1 :]
-                
-                self.storeReq.verify = line
-                self.storeReq.type = 'INTF'
-
-            #elif re.match(r'异常处理[：:]', line):
-            elif re.match(cf.get("regular", "HandleRgl"), line):
-                self.state = 7
-                
-            #elif re.match(r'相关性能需求[：:]', line):
-            elif re.match(cf.get("regular", "perfmRgl"), line):
-                self.state = 8
-
-            else:
-                if self.state == 2:
-
-                    line = line.strip()
-                    pos = line.find(' ')
-                    line = line[:pos]
-                    
-                    if line != '':
-                        self.storeReq.dataIn.append(line)
-
-                elif self.state == 3:
-
-                    line = line.strip()
-                    pos = line.find(' ')
-                    line = line[:pos]                    
-
-                    if line != '':
-                        self.storeReq.dataOut.append(line)
-
-        """
-        store the last requirement
-        """
-
-        # create concrete requirement
-        if self.storeReq.type == 'FUNC':
-            self.reqFact = FuncReqFactory()
-        elif self.storeReq.type == 'INTF':
-            self.reqFact = IntfReqFactory()
-
-        # store storeReq
-        # if self.storeReq.type == 'FUNC' or self.storeReq.type == 'INTF':
-        if self.storeReq.type != '':
-            self.reqFact.create()
-            self.reqFact.concreteStore(self.storeReq)
-
-        # set parse state: parse done
-        self.state = 100
-
-        # reset storeReq
-        self.storeReq.resetReq(line)
-
-
 
 
 

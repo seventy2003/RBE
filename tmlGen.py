@@ -16,6 +16,7 @@ Ver  | yyyymmdd | Who    | Description of changes
 """
 
 import json
+import time
 
 codeText = ""
 
@@ -26,6 +27,21 @@ classDefStatement = """class State$var$(PState):
 
 selfStatement = """        if (pars.match$var$()):
             pars.proc$var$()
+"""
+
+selfStatementHead = """        if (pars.match$var$()):
+            pars.resetState()
+            pars.proc$var$()
+"""
+
+selfStatementTail = """        if (pars.match$var$()):
+            pars.proc$var$()
+            pars.endState()
+"""
+
+selfNoneStatement = """        if (pars.match$var$()):
+            pars.setState(State$var$())
+            pars.parseLine()
 """
 
 postStatement = """        elif (pars.match$var$()):
@@ -46,8 +62,17 @@ attriEndStatement = """        else:
 attriContStatement = """        else:
             pars.proc$var$()
 """
+
 nullClassStatement = """        pass
 """
+
+lineParseStatement = """    def lineParse(self, pars):
+
+        if (pars.match$var$()):
+            pars.setState(State$var$())
+            pars.parseLine()
+"""
+
 
 f = open('tplText.tpl.py', 'r')
 
@@ -58,18 +83,24 @@ output = open('pState.py', 'w')
 for line in inText:
     codeText += line
 
-# generate itemDict and null Items list FROM json, todo 
+# generate itemDict and null Items list FROM json file
 tmlJson = json.load(open('rules.json'))
 nullItems = tmlJson["allItems"][:]
+head = tmlJson["headAttribute"]
+tail = tmlJson["tailAttribute"]
+
 itemDict = {}
 del tmlJson["allItems"]
+del tmlJson["headAttribute"]
+del tmlJson["tailAttribute"]
+
 for ele in nullItems:
     postList = []
 
     if ele == "None" or ele == "Excp":
         continue
     for key in tmlJson:
-        if key == "allItems":
+        if key == "allItems" :
             continue
         if ele in tmlJson[key]:
             idx = tmlJson[key].index(ele) + 1
@@ -92,6 +123,9 @@ for ele in nullItems:
 #itemDict = {"Id":["Disc"], "Disc":["Input", "Verify"], "Input":["Output"], "Output":["Handle"], "Handle":["Perfm"], "Perfm":["Verify"], "Verify":["Trace"], "Trace":["Id"] }
 #nullItems =  ["Id", "Disc", "Input", "Output", "Handle", "Perfm", "Verify", "Trace", "None", "Excp", "Interface", "Abcdefg"]
 
+# valid json, todo
+# funReq items must in allItems, head and tail must in allItems, and must be head and end of funReq and other type of Req.
+
 itemEnum = []
 
 for key in itemDict:
@@ -109,7 +143,12 @@ for key in itemDict:
         code += classDefStatement.replace("$var$", key)
 
     # part 1: self code
-    code += selfStatement.replace("$var$", key)
+    if key == head:
+        code += selfStatementHead.replace("$var$", key)
+    elif key == tail:
+        code += selfStatementTail.replace("$var$", key)
+    else:
+        code += selfStatement.replace("$var$", key)
 
     # part 2: post code
     for it in itemDict[key]:
@@ -130,18 +169,60 @@ for key in itemDict:
     kw = "#" + key + "#"
     codeText = codeText.replace("#" + key + "#", code)
 
+"""
+code of 'None' state
+"""
 
-# process null class
+code = ""
+code += classDefStatement.replace("$var$", "None")
+
+# if code
+code += selfNoneStatement.replace("$var$", head)
+
+# elif code
+for key in itemDict:
+    if key == head:
+        continue
+    else:
+        code += excpStatement.replace("$var$", key)
+
+# else code
+#code += attriEndStatement.replace("$var$", "None")
+
+codeText = codeText.replace("#" + "None" + "#", code)
+
+"""
+code of lineParse
+"""
+code = ""
+code += lineParseStatement.replace("$var$", head)
+codeText = codeText.replace("#" + "lineParse" + "#", code)
+
+"""
+process null class
+"""
+
 nullItems.remove("None")
 nullItems.remove("Excp")
-code = ""
+
 if nullItems:
     for it in nullItems:
+        code = ""
         code += classDefStatement.replace("$var$", it)
         code += nullClassStatement
 
         kw = "#" + it + "#"
         codeText = codeText.replace("#" + it + "#", code)
+
+"""
+update time
+"""
+curDay = time.strftime("%Y%m%d", time.localtime())
+codeText = codeText.replace("#GENDAY#", curDay)
+
+curTime = time.strftime("%H:%M:%S", time.localtime())
+codeText = codeText.replace("#GENTIME#", curTime)
+
 
 # idCode = ""
 # idCode += selfStatement.replace("$var$", "Id")
@@ -150,6 +231,10 @@ if nullItems:
 # idCode += elseStatement.replace("$var$", "Excp")
 
 # codeTextNew = codeText.replace("#Id#", idCode)
+
+"""
+write file
+"""
 
 output.write(codeText)
 output.close()

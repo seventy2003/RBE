@@ -1,5 +1,7 @@
 {
     "allItems": ["Id", "Disc", "Input", "Output", "Handle", "Perfm", "Verify", "Trace", "None", "Excp", "Interface"],
+    "headAttribute": "Id",
+    "tailAttribute": "Trace",
     "funReq": ["Id", "Disc", "Input", "Output", "Handle", "Perfm", "Verify", "Trace"],
     "intfReq": ["Id", "Disc", "Verify", "Trace"]
 }
