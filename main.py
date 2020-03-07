@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 """
-1
-
 FILE : main 
 
 DESCRIPTION:   
