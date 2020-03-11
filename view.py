@@ -29,6 +29,9 @@ from strace import *
 from req import *
 from parse import Parse
 from output import OutputRBE
+from relation import Relation
+from critical import Critical
+from verify import Verify
 
 
 # for debug display
@@ -44,11 +47,20 @@ cmdUI = [
         '  \'2\': display list'             ,
         '  \'3\': output SRS'               ,
         '  \'4\': trace USER ID'            ,
-        '  \'5\': generate database file'   ,
-        '  \'6\': dependency analyze'       ,
-        '  \'7\': tradeoff analyze'         ,
-        '  \'8\': generate figures'         ,                    
+        '  \'5\': relation analyze'         ,
+        '  \'6\': critical analyze'         ,
+        '  \'7\': verify table'             ,        
+        '  \'8\': tradeoff analyze'         ,
+        '  \'9\': generate figures'         ,                    
         '  \'0\': exit.'
+]
+
+subUIFig = [
+        '--------------------------------'  ,
+        'Input command:'                    ,
+        '  \'1\': SRS Pie chart'            ,
+        '  \'2\': verify Pie chart'         ,                          
+        '  \'0\': return.'
 ]
 
 class View:
@@ -69,10 +81,16 @@ class CmdView(View):
     parse = None
     trace = None
     outPutSrs = None
+    relat = None
+    crt = None
+    verif = None
     
     def init(self):
         self.parse = Parse()
         self.outPutSrs = OutputRBE()
+        self.relat = Relation()
+        self.crt = Critical()
+        self.verif = Verify()
 
     def getInput(self):
 
@@ -160,16 +178,30 @@ class CmdView(View):
 
             else:
                 print('Parse first please.')
+        elif cmd == '5':
+            print('Analyze relations of SRS...')
+            if self.parse.state == 100:
+                self.relat.genLevelRt()
+                self.relat.outputRt()
+                print("Done.")
+            else:
+                print('Parse first please.')
+        elif cmd == '6':
+            print('Analyze relations of SRS...')
+            if self.parse.state == 100:
+                self.crt.outputCrtal()
+                print("Done.")
+            else:
+                print('Parse first please.')
+        elif cmd == '7':
+            print('Generate verify table...')
+            if self.parse.state == 100:
+                self.verif.outputVerify()
+                print("Done.")
+            else:
+                print('Parse first please.')
         elif cmd == '9':
-            print('Generate csv file...')
-
-            f = open('../output/dict.csv','w')
-
-            csvWriter = csv.writer(f)
-            for k in srsDict:
-                if srsDict[k]:
-                    csvWriter.writerow([k, srsDict[k].type])
-            f.close()
+            self.subFigInteract()
 
         elif cmd == '0':
             os._exit(0)
@@ -177,6 +209,26 @@ class CmdView(View):
             print('Invalid input.')
             
         return
+
+    def subFigInteract(self):
+
+        # display UI
+        for line in subUIFig:
+            print(line)
+
+        cmd = input()
+        if cmd == '1':
+            print('Print SRS pie chart.')
+            self.outPutSrs.genPieChart()
+        elif cmd == '2':
+            print('Print verify pie chart.')
+            self.verif.genPieChart()
+        elif cmd == '0':
+            return
+        else:
+            print('Invalid input.')
+            
+        return        
         
     def run(self):
         self.init()

@@ -39,16 +39,20 @@ class ValidFuncReq(FuncReq):
 
     verify = ''
     dataIn = []
-    #dataOut = []
+    dataOut = []
 
 class InvalidFuncReq(FuncReq):
     pass
 
 class PerfReq(Req):
     verify = ''
+    dataIn = []
+    dataOut = []
 
 class SafeReq(Req):
     verify = ''
+    dataIn = []
+    dataOut = []
 
 class IntfReq(Req):
 
