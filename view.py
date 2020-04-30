@@ -27,6 +27,7 @@ import csv
 
 from strace import *
 from req import *
+from inform import *
 from parse import Parse
 from output import OutputRBE
 from relation import Relation
@@ -63,6 +64,14 @@ subUIFig = [
         '  \'0\': return.'
 ]
 
+subUITrace = [
+        '--------------------------------'  ,
+        'Input command:'                    ,
+        '  \'1\': SRS and USER'             ,
+        '  \'2\': SDD and SRS'              ,                          
+        '  \'0\': return.'
+]
+
 class View:
     
     def __init__(self):
@@ -84,6 +93,7 @@ class CmdView(View):
     relat = None
     crt = None
     verif = None
+    infm = None
     
     def init(self):
         self.parse = Parse()
@@ -91,6 +101,7 @@ class CmdView(View):
         self.relat = Relation()
         self.crt = Critical()
         self.verif = Verify()
+        self.infm = Inform()
 
     def getInput(self):
 
@@ -141,6 +152,7 @@ class CmdView(View):
             
         elif cmd == '2':
             self.display()
+            #self.infm.checkAll()
         elif cmd == '3':
             print('Output SRS...')
             if self.parse.state == 100:
@@ -150,32 +162,8 @@ class CmdView(View):
                 print('Parse first please.')
 
         elif cmd == '4':
-            print('Trace User ID...')
             if self.parse.state == 100:
-                print('Start trace')
-
-                # get rw file
-                try:
-                    cf = configparser.ConfigParser()
-                    cf.read("smg.conf",encoding="utf-8-sig")
-                    infile = cf.get("input", "inUsrFile")
-                    #self.f = open(infile, 'r', encoding = 'gb18030', errors = 'ignore')
-                    self.fileRw = Document(infile)
-                except IOError:
-                    print("File Open fail\n")
-                    raise Exception("File Open fail\n")
-
-                self.trace = STrace(self.fileRw)
-                self.trace.getUsrDict()
-                self.trace.doTrace()
-                self.trace.debug()
-                #self.trace.hasThisFun()
-
-
-
-                #self.fc = fuck()
-                #self.fc.funp()
-
+                self.subTraceInteract()
             else:
                 print('Parse first please.')
         elif cmd == '5':
@@ -210,25 +198,74 @@ class CmdView(View):
             
         return
 
+    def subTraceInteract(self):
+        
+        while (1):
+            # display UI
+            for line in subUITrace:
+                print(line)
+
+            cmd = input()
+            if cmd == '1':
+                print('SRS and USR tracing.')
+                # get rw file
+                try:
+                    cf = configparser.ConfigParser()
+                    cf.read("smg.conf",encoding="utf-8-sig")
+                    infile = cf.get("input", "inUsrFile")
+                    #self.f = open(infile, 'r', encoding = 'gb18030', errors = 'ignore')
+                    self.fileRw = Document(infile)
+                except IOError:
+                    print("File Open fail\n")
+                    raise Exception("File Open fail\n")
+
+                self.trace = STrace(self.fileRw)
+                self.trace.getUsrDict()
+                self.trace.doTraceSrs2Usr()
+                self.trace.debug()
+
+            elif cmd == '2':
+                print('SDD and SRS tracing.')
+
+                # get sdd file
+                try:
+                    cf = configparser.ConfigParser()
+                    cf.read("smg.conf",encoding="utf-8-sig")
+                    infile = cf.get("input", "inSddFile")
+                    #self.f = open(infile, 'r', encoding = 'gb18030', errors = 'ignore')
+                    self.fileRw = Document(infile)
+                except IOError:
+                    print("File Open fail\n")
+                    raise Exception("File Open fail\n")
+
+                self.trace = STrace(self.fileRw)
+                self.trace.getSddTraceList()
+                self.trace.doTraceSdd2Srs()
+                self.trace.sddTrOutput()
+
+            elif cmd == '0':
+                return
+            else:
+                print('Invalid input.')   
+    
     def subFigInteract(self):
 
-        # display UI
-        for line in subUIFig:
-            print(line)
+        while (1):
+            # display UI
+            for line in subUIFig:
+                print(line)
 
-        cmd = input()
-        if cmd == '1':
-            print('Print SRS pie chart.')
-            self.outPutSrs.genPieChart()
-        elif cmd == '2':
-            print('Print verify pie chart.')
-            self.verif.genPieChart()
-        elif cmd == '0':
-            return
-        else:
-            print('Invalid input.')
-            
-        return        
+            cmd = input()
+            if cmd == '1':
+                print('Print SRS pie chart.')
+                self.outPutSrs.genPieChart()
+            elif cmd == '2':
+                print('Print verify pie chart.')
+                self.verif.genPieChart()
+            elif cmd == '0':
+                return
+            else:
+                print('Invalid input.')      
         
     def run(self):
         self.init()
@@ -249,6 +286,8 @@ class CmdView(View):
                       srsDict[key].verify)
 
         print("Dsplay for debug Done.")
+
+        
 
 
 

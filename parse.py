@@ -153,6 +153,12 @@ class Parse:
         
         # reset storeReq
         pos = self.line.find(self.cf.get("regular", "srsIdRgl"))
+
+        # error report, if ID flag not found in ID line 
+        if pos == -1:
+            print("ERR: NOT FOUND ID REGULATION.  %s"   %(self.line))
+            return
+
         self.line = self.line[pos:].strip()
 
         self.storeReq.id = self.line
@@ -253,7 +259,6 @@ class Parse:
         self.storeReq.trace = strip_line
 
 
-
     def procExcp(self):
         print("Format error.\n")
         raise UserWarning(self.line, self.storeReq.id)
@@ -288,8 +293,8 @@ class Parse:
             # for debug
             #print("****\n")
             #print(type(self.pState))
-            # if line == "ID: SRS_IF_iFp_Ctl":
-            #     a = 100
+            #if line == "ID:  SRS_Safe_OxMng_SelSysWorkMode_IsSysBlt":
+            #    a = 100
 
             self.setLine(line)
             self.parseLine()

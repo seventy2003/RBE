@@ -16,6 +16,7 @@ Ver  | yyyymmdd | Who    | Description of changes
 
 """
 
+
 from view import *
 from docx import Document
 from sqlalchemy import *
