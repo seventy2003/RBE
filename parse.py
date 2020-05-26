@@ -21,6 +21,7 @@ import configparser
 from req import Req, TotalReq, ValidFuncReq, IntfReq
 from req import *
 from pState import StateInit
+from warnWords import *
 
 
 
@@ -161,6 +162,12 @@ class Parse:
 
         self.line = self.line[pos:].strip()
 
+        # ID check of valid characters
+        patn = r'^[a-zA-Z0-9_]+$'
+        res = re.search(patn, self.line)
+        if res == None:
+            print("WARNNING: INVALID CHARACTERS IN ID.  %s"   %(self.line))
+
         self.storeReq.id = self.line
 
         searchRelt = re.search(self.cf.get("nonFuncId", "safReqIdRel"), self.line)
@@ -193,15 +200,29 @@ class Parse:
             pos = mm.start()
             line = self.line[pos + 1 :]
             line = line.strip()
-            pos = line.find(' ')
-            line = line[:pos]
+
+            # check NULL attribute
+            # if re.match(r'^[\s]+$', line) or line == '':
+            #     print("WARNNING: NULL ATTRIBUTE.  %s"   %(self.storeReq.id + " Input"))
+
+            # pos = line.find(' ')
+            # if pos != -1:
+            #     line = line[:pos]
         else:
             line = self.line.strip()
-            pos = line.find(' ')
-            line = line[:pos]          
 
-        if line != '':
-            self.storeReq.dataIn.append(line)
+        pos = line.find(' ')
+        if pos != -1:
+            line = line[:pos]
+
+        patn = r'^[a-zA-Z0-9_.]+$'
+        res = re.search(patn, line)
+        
+        if line != '' and res != None:        
+            self.storeReq.dataOut.append(line)
+        elif line == '':
+            print("WARNNING: NULL ATTRIBUTE.  %s"   %(self.storeReq.id + " Input"))
+
         #self.storeReq.type = 'FUNC'
 
     def procOutput(self):
@@ -211,21 +232,51 @@ class Parse:
             pos = mm.start()
             line = self.line[pos + 1 :]
             line = line.strip()
-            pos = line.find(' ')
-            line = line[:pos]
+
+            # check NULL attribute
+            # if re.match(r'^[\s]+$', line) or line == '':
+            #     print("WARNNING: NULL ATTRIBUTE.  %s"   %(self.storeReq.id + " Output"))
+
         else:
             line = self.line.strip()
-            pos = line.find(' ')
+        
+        pos = line.find(' ')
+        if pos != -1:
             line = line[:pos]                           
 
-        if line != '':        
+        patn = r'^[a-zA-Z0-9_.]+$'
+        res = re.search(patn, line)
+        
+        if line != '' and res != None:        
             self.storeReq.dataOut.append(line)
+        elif line == '':
+            print("WARNNING: NULL ATTRIBUTE.  %s"   %(self.storeReq.id + " Output"))
 
     def procHandle(self):
-        pass
+
+        mm = re.search('[：:]', self.line)
+        if mm:
+            pos = mm.start()
+            line = self.line[pos + 1 :]
+            line = line.strip()
+        else:
+            line = self.line.strip()
+        
+        # if line == '':
+        #     print("WARNNING: NULL ATTRIBUTE.  %s"   %(self.storeReq.id + " Handle"))
 
     def procPerfm(self):
-        pass
+        
+        mm = re.search('[：:]', self.line)
+        if mm:
+            pos = mm.start()
+            line = self.line[pos + 1 :]
+            line = line.strip()
+        else:
+            line = self.line.strip()
+        
+        # if line == '':
+        #     print("WARNNING: NULL ATTRIBUTE.  %s"   %(self.storeReq.id + " Perfm"))
 
     def procVerify(self):
 
@@ -233,7 +284,10 @@ class Parse:
         line = self.line[pos + 1 :]
         line = line.strip()
         
-        self.storeReq.verify = line
+        if line != '':
+            self.storeReq.verify = line
+        else:
+            print("WARNNING: NULL ATTRIBUTE.  %s"   %(self.storeReq.id + " Verify"))
 
     def procInterface(self):
 
@@ -256,6 +310,13 @@ class Parse:
         # delete front and end space of every element
         strip_line = [ele.strip() for ele in line]
         
+        # if strip_line:
+        #     # do nothing
+        #     pass
+        # else:
+        if '' in strip_line:
+            print("WARNNING: NULL ATTRIBUTE.  %s"   %(self.storeReq.id + " Trace"))
+        
         self.storeReq.trace = strip_line
 
 
@@ -271,6 +332,10 @@ class Parse:
         self.line = aLine
     
     def parseLine(self):
+
+        # warning words check
+        if self.cf.get("enSw", "enSwWordsWarn") == '1':
+            warnWdsPars(self.line)
 
         self.pState.lineParse(self)
     

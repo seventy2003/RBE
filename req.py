@@ -105,9 +105,11 @@ class FuncReqFactory(ReqFactory):
         self.req.verify = reqP.verify
 
         if self.req.id in srsDict:
-            print("Same ID found.")
-            print(self.req.id)
-            assert self.req.id not in srsDict
+            # print("Same ID found.")
+            # print(self.req.id)
+            # assert self.req.id not in srsDict
+            print("ERR: Same SRS ID: %s"   %(self.req.id))
+            
         
         srsDict[self.req.id] = self.req
 
@@ -123,9 +125,11 @@ class PerfReqFactory(ReqFactory):
         self.req.verify = reqP.verify
 
         if self.req.id in srsDict:
-            print("Same ID found.")
-            print(self.req.id)
-            assert self.req.id not in srsDict
+            #print("Same ID found.")
+            #print(self.req.id)
+            #assert self.req.id not in srsDict
+            print("ERR: Same SRS ID: %s"   %(self.req.id))
+            
         
         srsDict[self.req.id] = self.req    
 
@@ -141,9 +145,10 @@ class SafeReqFactory(ReqFactory):
         self.req.verify = reqP.verify
 
         if self.req.id in srsDict:
-            print("Same ID found.")
-            print(self.req.id)
-            assert self.req.id not in srsDict
+            # print("Same ID found.")
+            # print(self.req.id)
+            # assert self.req.id not in srsDict
+            print("ERR: Same SRS ID: %s"   %(self.req.id))
         
         srsDict[self.req.id] = self.req    
 
@@ -161,9 +166,10 @@ class IntfReqFactory(ReqFactory):
         self.req.verify = reqP.verify
 
         if self.req.id in srsDict:
-            print("Same ID found.")
-            print(self.req.id)
-            assert self.req.id not in srsDict        
+            # print("Same ID found.")
+            # print(self.req.id)
+            # assert self.req.id not in srsDict
+            print("ERR: Same SRS ID: %s"   %(self.req.id))
 
         srsDict[self.req.id] = self.req
 

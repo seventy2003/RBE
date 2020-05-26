@@ -63,13 +63,28 @@ class STrace:
             # search user ID
             matchFlag = re.match(self.cf.get("usrFile", "usrIdLineRgl"), line)
             if matchFlag:
-                key = line
+                #key = line
+                pos = line.find(self.cf.get("usrFile", "usrIdRgl"))
+
+                if pos == -1:
+                    print("ERR: NOT FOUND ID REGULATION.  %s"   %(line))
+                    continue
+                else:
+                    line = line[pos:].strip()
+                    key = line
+
+                    # ID check of valid characters
+                    patn = r'^[a-zA-Z0-9_]+$'
+                    res = re.search(patn, key)
+                    if res == None:
+                        print("WARNNING: INVALID CHARACTERS IN ID.  %s"   %(key))
+
 
                 # test if same ID is found
                 if key in self.usrDict:
                     print("ERR: Same USER ID: %s"   %(key))
                     # to continue to run? todo
-                    assert key not in self.usrDict
+                    # assert key not in self.usrDict
 
                 self.usrDict[key] = []
         
@@ -99,12 +114,6 @@ class STrace:
 
             for ele in usrList:
                 tmpList = []
-                # if ele not in self.usrDict:
-                #     if ele != 'DERIVED' and ele != 'Derived':
-                #         print("ERR: USER ITEM NOT FOUND IN RW DOC: %s"  %(ele))
-                # else:
-                #     if ele in self.usrTrSrs:
-                #         tmpList = self.usrTrSrs[ele]
                 if ele in self.usrTrSrs:
                     tmpList = self.usrTrSrs[ele]
                 else:
@@ -114,7 +123,6 @@ class STrace:
                         
                 tmpList.append(key)
                 self.usrTrSrs[ele] = tmpList
-
 
     def getSddTraceList(self):
         #for line in self.inFileObj:
@@ -138,11 +146,17 @@ class STrace:
                     line = line[pos:].strip()
                     key = line
 
+                    # ID check of valid characters
+                    patn = r'^[a-zA-Z0-9_]+$'
+                    res = re.search(patn, key)
+                    if res == None:
+                        print("WARNNING: INVALID CHARACTERS IN ID.  %s"   %(key))                    
+
                 # test if same ID is found
                 if key in self.sddDict:
                     print("ERR: Same SDD ID: %s"   %(key))
                     # to continue to run? todo
-                    assert key not in self.sddDict
+                    # assert key not in self.sddDict
 
                 # for debug, to delete, todo
                 if key == 'F':
