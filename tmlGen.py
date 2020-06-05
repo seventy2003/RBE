@@ -161,7 +161,7 @@ for key in itemDict:
     # part 3: else code
     if key == "Id" or key == "Verify":
         code += attriEndStatement.replace("$var$", "Excp")
-    elif key == "Trace":
+    elif key == tail:
         code += attriEndStatement.replace("$var$", "None")
     else:
         code += attriContStatement.replace("$var$", key)
