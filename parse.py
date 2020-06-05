@@ -219,7 +219,7 @@ class Parse:
         res = re.search(patn, line)
         
         if line != '' and res != None:        
-            self.storeReq.dataOut.append(line)
+            self.storeReq.dataIn.append(line)
         elif line == '':
             print("WARNNING: NULL ATTRIBUTE.  %s"   %(self.storeReq.id + " Input"))
 
